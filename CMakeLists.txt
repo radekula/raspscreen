@@ -16,6 +16,14 @@ endif ()
 
 set (BUILD_DIR "build")
 
+find_package(PkgConfig REQUIRED)
+
+pkg_check_modules(JSONCPP REQUIRED jsoncpp)
+
+include_directories(${JSONCPP_INCLUDE_DIRS})
+link_directories(${JSONCPP_LIBRARY_DIRS})
+link_libraries(${JSONCPP_LIBRARIES})
+
 include_directories (${CMAKE_CURRENT_LIST_DIR}/include)
 
 file (GLOB RASPSCREEN_SRC "src/*.cxx")

@@ -5,6 +5,7 @@
 #include <chrono>
 #include <thread>
 #include <mutex>
+#include <map>
 #include <restsrv.hpp>
 
 
@@ -22,6 +23,7 @@ public:
     std::chrono::system_clock::time_point valid_until;
 
 public:
+    std::string name;
     std::string text;
 
 public:
@@ -46,8 +48,8 @@ CScreen::~CScreen()
 
 
 
-std::list<std::shared_ptr<CScreen>> screens;
-
+std::map<std::string, std::shared_ptr<CScreen>> screens;
+std::shared_ptr<CScreen> last_screen;
 
 
 
@@ -68,14 +70,16 @@ void update_screen()
     // get current time
     auto now = std::chrono::high_resolution_clock::now();
 
-    // remove not valid screens screens
+    // remove not valid screens
     for(auto screen : screens)
     {
-        if(screen->valid_until < now)
+        if(screen.second->valid_until < now)
         {
-            screens.remove(screen);
-            if(screen == last_screen)
+            if(screen.second == last_screen)
                 last_screen = nullptr;
+
+            auto it = screens.find(screen.first);
+            screens.erase(it);
         };
     };
 
@@ -87,13 +91,13 @@ void update_screen()
     }
 
     std::shared_ptr<CScreen> current_screen;
-    current_screen = *screens.begin();
+    current_screen = screens.begin()->second;
 
     // search for screen with highest priority
     for(auto screen : screens)
     {
-        if(screen->priority > current_screen->priority)
-            current_screen = screen;
+        if(screen.second->priority > current_screen->priority)
+            current_screen = screen.second;
     };
 
     if(last_screen && current_screen->priority == last_screen->priority)
@@ -109,6 +113,42 @@ void update_screen()
 void request_handler(rest::server::RestRequest &request, rest::server::RestResponse &response)
 {
     std::lock_guard<std::mutex> guard(thread_lock);
+    
+    if(request.resource() != "/screen")
+    {
+        response.set_http_code(404);
+        return;
+    };
+
+    if(request.method() != "POST")
+    {
+        response.set_http_code(405);
+        return;
+    };
+
+    auto screen = request.body();
+
+    auto now = std::chrono::high_resolution_clock::now();
+
+    std::shared_ptr<CScreen> new_screen = std::make_shared<CScreen>();
+    new_screen->name = screen["name"].asString();
+    new_screen->text = screen["text"].asString();
+    new_screen->priority = screen["priority"].asInt();
+    new_screen->valid_until = now + std::chrono::seconds(screen["duration"].asInt());
+
+    if(screens.find(new_screen->name) != screens.end())
+    {
+        screens[new_screen->name]->name = new_screen->name;
+        screens[new_screen->name]->text = new_screen->text;
+        screens[new_screen->name]->priority = new_screen->priority;
+        screens[new_screen->name]->valid_until = new_screen->valid_until;
+    }
+    else
+    {
+        screens[new_screen->name] = new_screen;
+    };
+
+    response.set_http_code(200);
 }
 
 
@@ -146,7 +186,7 @@ int main(int argc, char* argv[])
         while(running)
         {
             update_screen();
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         };
     }
     catch (...)
