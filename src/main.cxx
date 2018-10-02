@@ -7,12 +7,12 @@
 #include <mutex>
 #include <map>
 #include <restsrv.hpp>
-
+#include <rasplib.hpp>
 
 
 std::mutex thread_lock;
 
-
+rasplib::display::Alphanumeric lcd(16, 2);
 
 
 class CScreen
@@ -86,7 +86,7 @@ void update_screen()
     // if list is empty clean screen
     if(screens.size() < 1)
     {
-        std::cout << now.time_since_epoch().count() << ":\n" << "[EMPTY]" << std::endl;
+        lcd.print("    [EMPTY]    \n ");
         return;
     }
 
@@ -103,7 +103,7 @@ void update_screen()
     if(last_screen && current_screen->priority == last_screen->priority)
         current_screen = last_screen;
 
-    std::cout << now.time_since_epoch().count() << ":\n" << current_screen->text << std::endl;
+    lcd.print(current_screen->text);
     last_screen = current_screen;
 };
 
@@ -113,7 +113,7 @@ void update_screen()
 void request_handler(rest::server::RestRequest &request, rest::server::RestResponse &response)
 {
     std::lock_guard<std::mutex> guard(thread_lock);
-    
+
     if(request.resource() != "/screen")
     {
         response.set_http_code(404);
@@ -179,6 +179,11 @@ bool running = true;
 
 int main(int argc, char* argv[])
 {
+    lcd.init(1, std::bitset<8>(0x27));
+    lcd.set_mode(2, false, false);
+
+    lcd.clean();
+
     auto rest_thread = new std::thread(rest_handler);
 
     try
@@ -186,7 +191,7 @@ int main(int argc, char* argv[])
         while(running)
         {
             update_screen();
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            std::this_thread::sleep_for(std::chrono::milliseconds(250));
         };
     }
     catch (...)

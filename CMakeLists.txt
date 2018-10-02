@@ -38,4 +38,8 @@ include_directories (${LIBRESTSRV_DIR}/include)
 include_directories (${LIBRESTSRV_DIR}/include/client)
 target_link_libraries(raspscreen ${LIBRESTSRV_DIR}/build/librestsrv.so)
 
+set (RASPLIB_DIR ${CMAKE_CURRENT_LIST_DIR}/../rasplib)
+include_directories (${RASPLIB_DIR}/include)
+target_link_libraries(raspscreen ${RASPLIB_DIR}/build/librasplib.so)
+
 
