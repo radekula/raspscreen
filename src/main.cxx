@@ -12,7 +12,7 @@
 
 std::mutex thread_lock;
 
-rasplib::display::Alphanumeric lcd(16, 2);
+rasplib::display::Alphanumeric lcd(20, 4, 20);
 
 
 class CScreen
