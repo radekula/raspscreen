@@ -86,9 +86,14 @@ void update_screen()
     // if list is empty clean screen
     if(screens.size() < 1)
     {
-        lcd.print("    [EMPTY]    \n ");
+        lcd.clean();
+        lcd.backlight(false);
         return;
     }
+    else
+    {
+        lcd.backlight(true);
+    };
 
     std::shared_ptr<CScreen> current_screen;
     current_screen = screens.begin()->second;
