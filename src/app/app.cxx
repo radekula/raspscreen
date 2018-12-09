@@ -141,9 +141,7 @@ void App::request_handler(rest::server::RestRequest &request, rest::server::Rest
 
 void App::new_screen(Json::Value &screen)
 {
-    raspscreen::log::Logger::log("Waiting for mutex");
     std::lock_guard<std::mutex> guard(thread_lock);
-    raspscreen::log::Logger::log("Mutex acquired");
 
     auto now = std::chrono::high_resolution_clock::now();
 
