@@ -17,23 +17,29 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#include <screen/screen.hpp>
+
+namespace raspscreen {
+namespace screen {
 
 
 
-#include <iostream>
-#include <raspscreen.hpp>
 
-
-
-int main(int argc, char* argv[])
+Screen::Screen()
 {
-    raspscreen::log::Logger::log("Application init");
-    raspscreen::app::App::get()->init(argc, argv);
-
-    raspscreen::log::Logger::log("Starting application");
-    raspscreen::app::App::get()->run();
+    priority = 0;
+    valid_until = std::chrono::high_resolution_clock::now() + std::chrono::seconds(1);
 };
 
 
 
 
+Screen::~Screen()
+{
+};
+
+
+
+
+}
+}

@@ -17,23 +17,25 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-
-
-
 #include <iostream>
-#include <raspscreen.hpp>
+#include <log/logger.hpp>
 
 
 
-int main(int argc, char* argv[])
+
+namespace raspscreen {
+namespace log {
+
+
+
+
+void Logger::log(std::string message)
 {
-    raspscreen::log::Logger::log("Application init");
-    raspscreen::app::App::get()->init(argc, argv);
-
-    raspscreen::log::Logger::log("Starting application");
-    raspscreen::app::App::get()->run();
+    std::cout << message << std::endl;
 };
 
 
 
 
+}
+}

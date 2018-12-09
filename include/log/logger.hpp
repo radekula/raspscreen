@@ -17,23 +17,30 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#ifndef __RASPSCREEN_LOG_HPP__
+#define __RASPSCREEN_LOG_HPP__
+
+#include <string>
 
 
 
-#include <iostream>
-#include <raspscreen.hpp>
+
+namespace raspscreen {
+namespace log {
 
 
 
-int main(int argc, char* argv[])
+
+class Logger
 {
-    raspscreen::log::Logger::log("Application init");
-    raspscreen::app::App::get()->init(argc, argv);
-
-    raspscreen::log::Logger::log("Starting application");
-    raspscreen::app::App::get()->run();
+public:
+    static void log(std::string message);
 };
 
 
 
 
+}
+}
+
+#endif

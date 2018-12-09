@@ -25,8 +25,11 @@ link_directories(${JSONCPP_LIBRARY_DIRS})
 link_libraries(${JSONCPP_LIBRARIES})
 
 include_directories (${CMAKE_CURRENT_LIST_DIR}/include)
+include_directories (${CMAKE_CURRENT_LIST_DIR}/include/app)
+include_directories (${CMAKE_CURRENT_LIST_DIR}/include/log)
+include_directories (${CMAKE_CURRENT_LIST_DIR}/include/screen)
 
-file (GLOB RASPSCREEN_SRC "src/*.cxx")
+file (GLOB RASPSCREEN_SRC "src/*.cxx" "src/app/*.cxx" "src/log/*.cxx" "src/screen/*.cxx")
 add_executable (raspscreen ${RASPSCREEN_SRC})
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -41,5 +44,8 @@ target_link_libraries(raspscreen ${LIBRESTSRV_DIR}/build/librestsrv.so)
 set (RASPLIB_DIR ${CMAKE_CURRENT_LIST_DIR}/../rasplib)
 include_directories (${RASPLIB_DIR}/include)
 target_link_libraries(raspscreen ${RASPLIB_DIR}/build/librasplib.so)
+
+include_directories (${CMAKE_CURRENT_LIST_DIR}/include)
+
 
 

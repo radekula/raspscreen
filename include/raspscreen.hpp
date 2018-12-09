@@ -18,22 +18,12 @@
 */
 
 
+#ifndef __RASPSCREEN_HPP__
+#define __RASPSCREEN_HPP__
+
+#include <app/app.hpp>
+#include <log/logger.hpp>
+#include <screen/screen.hpp>
 
 
-#include <iostream>
-#include <raspscreen.hpp>
-
-
-
-int main(int argc, char* argv[])
-{
-    raspscreen::log::Logger::log("Application init");
-    raspscreen::app::App::get()->init(argc, argv);
-
-    raspscreen::log::Logger::log("Starting application");
-    raspscreen::app::App::get()->run();
-};
-
-
-
-
+#endif
