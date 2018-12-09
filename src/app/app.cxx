@@ -19,7 +19,7 @@
 
 #include <app/app.hpp>
 #include <log/logger.hpp>
-
+#include <list>
 
 
 
@@ -179,16 +179,19 @@ void App::update_screen()
     auto now = std::chrono::high_resolution_clock::now();
 
     // remove not valid screens
-    for(auto screen : screens)
+    std::list<std::map<std::string, std::shared_ptr<raspscreen::screen::Screen>>::iterator> to_remove;
+    for(auto screen = screens.begin(); screen != screens.end(); screen++)
     {
-        if(screen.second->valid_until < now)
-        {
-            if(screen.second == last_screen)
-                last_screen = nullptr;
+        if(screen->second->valid_until < now)
+            to_remove.push_back(screen);
+    };
 
-            auto it = screens.find(screen.first);
-            screens.erase(it);
-        };
+    for(auto screen : to_remove)
+    {
+        if(screen->second == last_screen)
+            last_screen = nullptr;
+
+        screens.erase(screen);
     };
 
     // if list is empty clean screen
