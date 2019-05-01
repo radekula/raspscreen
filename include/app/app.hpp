@@ -88,6 +88,11 @@ public:
      * Run applicaiton main loop
      */
     void run();
+
+    /**
+     * Stop application mail loop
+     */
+    void stop();
 };
 
 

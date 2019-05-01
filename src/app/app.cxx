@@ -252,5 +252,13 @@ void App::run()
 
 
 
+void App::stop()
+{
+    running = false;
+}
+
+
+
+
 }
 }
