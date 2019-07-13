@@ -36,6 +36,8 @@ raspscreen::app::App *raspscreen::app::App::instance = 0;
 
 App::App()
 {
+	instance = 0;
+
     // TODO: Make all constants default variables that can be passed from config file / command line
     int lcd_width = 20;
     int lcd_height = 4;
