@@ -101,10 +101,11 @@ void App::init(int argc, char* argv[])
 
 void App::rest_handler()
 {
-    // TODO: get port from config / command line
-    int port = 8080;
+    auto config = raspscreen::config::Config::instance();
+    auto host = config->get("HOST");
+    auto port = std::stoi(config->get("PORT"));
 
-    raspscreen::log::Logger::log(std::string("Starting REST interface on port: ") + std::to_string(port));
+    raspscreen::log::Logger::log(std::string("Starting REST interface on ") + host + ":" + std::to_string(port));
     rest::server::RestSrv srv(request_handler);
     srv.set_port(port);
 
