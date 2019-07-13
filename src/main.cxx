@@ -25,9 +25,6 @@
 #include <signal.h>
 
 
-void sigint_handler(int sig)
-{
-}
 
 
 int main(int argc, char* argv[])
@@ -49,15 +46,6 @@ int main(int argc, char* argv[])
     }
     catch(...)
     {
-    }
-
-    struct sigaction sa;
-    sa.sa_handler = sigint_handler;
-    sa.sa_flags = 0;
-    sigemptyset(&sa.sa_mask);
-
-    if (sigaction(SIGINT, &sa, NULL) == -1) {
-        exit(1);
     }
 
     raspscreen::log::Logger::log("Application init");

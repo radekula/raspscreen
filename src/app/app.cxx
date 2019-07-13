@@ -47,7 +47,7 @@ App::App()
     );
 
     int lcd_width = std::stoi(config->get("LCD_WIDTH"));
-    int lcd_height = std::stoi(config->get("LCD_HEIGTH"));
+    int lcd_height = std::stoi(config->get("LCD_HEIGHT"));
     int lcd_line_lenght = std::stoi(config->get("LCD_LINE_LENGTH"));
 
     bool mode = true;
