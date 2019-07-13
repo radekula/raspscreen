@@ -17,6 +17,7 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#include <config/config.hpp>
 #include <app/app.hpp>
 #include <log/logger.hpp>
 #include <list>
@@ -36,28 +37,30 @@ raspscreen::app::App *raspscreen::app::App::instance = 0;
 
 App::App()
 {
-	instance = 0;
+    auto config = raspscreen::config::Config::instance();
 
-    // TODO: Make all constants default variables that can be passed from config file / command line
-    int lcd_width = 20;
-    int lcd_height = 4;
-    int lcd_line_lenght = 20;
+    raspscreen::log::Logger::log(
+        std::string("Set LCD parameters:")
+        + "width: " + config->get("LCD_WIDTH")
+        + ", height: " + config->get("LCD_HEIGTH")
+        + ", line_lenght: " + config->get("LCD_LINE_LENGTH")
+    );
+
+    int lcd_width = std::stoi(config->get("LCD_WIDTH"));
+    int lcd_height = std::stoi(config->get("LCD_HEIGTH"));
+    int lcd_line_lenght = std::stoi(config->get("LCD_LINE_LENGTH"));
 
     bool mode = true;
     bool cursor = false;
     bool blink = false;
 
-    auto address = std::bitset<8>(0x27);
+    int i2c_device_address;
+    raspscreen::log::Logger::log("Set LCD address: " + config->get("I2C_DEVICE"));
+    std::istringstream(config->get("I2C_DEVICE")) >> std::hex >> i2c_device_address;
+    auto address = std::bitset<8>(i2c_device_address);
 
-    raspscreen::log::Logger::log(
-        std::string("Set LCD parameters:")
-        + "width: " + std::to_string(lcd_width)
-        + ", height: " + std::to_string(lcd_height)
-        + ", line_lenght: " + std::to_string(lcd_line_lenght)
-    );
     lcd = std::make_unique<rasplib::display::Alphanumeric>(lcd_width, lcd_height, lcd_line_lenght);
 
-    raspscreen::log::Logger::log("Set LCD address: " + address.to_string());
     lcd->init(1, address);
 
     raspscreen::log::Logger::log(std::string("Set LCD mode:")

@@ -11,7 +11,7 @@ if (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 3.0)
         set(CMAKE_CXX_STANDARD 14)
     endif ()
 else ()
-    set (CMAKE_CXX_FLAGS "-std=c++14")
+    set (CMAKE_CXX_FLAGS "-std=c++17")
 endif ()
 
 set (BUILD_DIR "build")
@@ -29,7 +29,7 @@ include_directories (${CMAKE_CURRENT_LIST_DIR}/include/app)
 include_directories (${CMAKE_CURRENT_LIST_DIR}/include/log)
 include_directories (${CMAKE_CURRENT_LIST_DIR}/include/screen)
 
-file (GLOB RASPSCREEN_SRC "src/*.cxx" "src/app/*.cxx" "src/log/*.cxx" "src/screen/*.cxx")
+file (GLOB RASPSCREEN_SRC "src/*.cxx" "src/app/*.cxx" "src/config/*.cxx" "src/log/*.cxx" "src/screen/*.cxx")
 add_executable (raspscreen ${RASPSCREEN_SRC})
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)

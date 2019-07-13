@@ -22,6 +22,7 @@
 #define __RASPSCREEN_HPP__
 
 #include <app/app.hpp>
+#include <config/config.hpp>
 #include <log/logger.hpp>
 #include <screen/screen.hpp>
 
