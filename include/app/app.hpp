@@ -49,7 +49,7 @@ private:
     /**
      * Rest handler function
      */
-    static void rest_handler();
+    static void rest_handler(raspscreen::app::App *app);
 
     /**
      * Request handler for rest handler function

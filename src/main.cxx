@@ -34,6 +34,9 @@ int main(int argc, char* argv[])
     // Set default config
     config->set("HOST", "0.0.0.0");
     config->set("PORT", "8080");
+    config->set("START_ATTEMPTS", "5");
+    config->set("START_ATTEMPTS_DELAY", "1");
+    config->set("LCD_LINE_LENGTH", "20");
     config->set("I2C_DEVICE", "0x27");
     config->set("LCD_WIDTH", "20");
     config->set("LCD_HEIGHT", "4");

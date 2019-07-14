@@ -40,9 +40,9 @@ App::App()
     auto config = raspscreen::config::Config::instance();
 
     raspscreen::log::Logger::log(
-        std::string("Set LCD parameters:")
+        std::string("Set LCD parameters: ")
         + "width: " + config->get("LCD_WIDTH")
-        + ", height: " + config->get("LCD_HEIGTH")
+        + ", height: " + config->get("LCD_HEIGHT")
         + ", line_lenght: " + config->get("LCD_LINE_LENGTH")
     );
 
@@ -99,26 +99,37 @@ void App::init(int argc, char* argv[])
 
 
 
-void App::rest_handler()
+void App::rest_handler(raspscreen::app::App *app)
 {
     auto config = raspscreen::config::Config::instance();
     auto host = config->get("HOST");
     auto port = std::stoi(config->get("PORT"));
+    auto attempt = 1;
+    auto max_attempts = std::stoi(config->get("START_ATTEMPTS"));
+    auto delay = std::stoi(config->get("START_ATTEMPTS_DELAY"));
 
     raspscreen::log::Logger::log(std::string("Starting REST interface on ") + host + ":" + std::to_string(port));
     rest::server::RestSrv srv(request_handler);
     srv.set_port(port);
 
-    while(1)
+    while(attempt <= max_attempts)
     {
         try
         {
+            raspscreen::log::Logger::log(std::string("Attempt ") + std::to_string(attempt) + " of " + std::to_string(max_attempts));
             srv.run();
         }
         catch(...)
         {
+            raspscreen::log::Logger::log(std::string("Failed to start REST interface. Waiting " + std::to_string(delay) + " sec."));
+            std::this_thread::sleep_for(std::chrono::seconds(delay));
+            attempt++;
         };
-    }
+    };
+
+
+    raspscreen::log::Logger::log(std::string("No more attempts left."));
+    app->running = false;
 };
 
 
@@ -237,7 +248,7 @@ void App::run()
     running = true;
 
     raspscreen::log::Logger::log("Starting REST interface thread");
-    auto rest_thread = new std::thread(rest_handler);
+    auto rest_thread = new std::thread(rest_handler, this);
 
     raspscreen::log::Logger::log("Cleaning screen");
     lcd->clean();
@@ -249,6 +260,8 @@ void App::run()
             update_screen();
             std::this_thread::sleep_for(std::chrono::milliseconds(250));
         };
+
+        raspscreen::log::Logger::log("Exiting application.");
     }
     catch (...)
     {
