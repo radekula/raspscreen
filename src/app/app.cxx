@@ -148,7 +148,7 @@ void App::request_handler(rest::server::RestRequest &request, rest::server::Rest
         return;
     };
 
-    raspscreen::log::Logger::log("New screen request");
+//    raspscreen::log::Logger::log("New screen request");
     raspscreen::app::App::get()->new_screen(request.body());
     response.set_http_code(200);
 };
@@ -168,7 +168,7 @@ void App::new_screen(Json::Value &screen)
     new_screen->priority = screen["priority"].asInt();
     new_screen->valid_until = now + std::chrono::seconds(screen["duration"].asInt());
 
-    raspscreen::log::Logger::log("Adding new screen to list of screens");
+//    raspscreen::log::Logger::log("Adding new screen to list of screens");
     if(screens.find(new_screen->name) != screens.end())
     {
         screens[new_screen->name]->name = new_screen->name;
